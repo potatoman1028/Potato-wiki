@@ -136,7 +136,7 @@ flowchart LR
 ### 일반 Markdown 링크
 
 ```markdown
-[Redis Docker 설치와 접속 설정](./Redis%20Docker%20설치와%20접속%20설정.md)
+[Redis Docker 설치와 접속 설정](<./Redis Docker 설치와 접속 설정.md>)
 ```
 
 장점:
