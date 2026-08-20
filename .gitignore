@@ -1,0 +1,16 @@
+# Obsidian의 기기별 UI 상태
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
+
+# 삭제된 노트와 운영체제 파일
+.trash/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# 공개 저장소에 올리지 않을 로컬 메모
+99_비공개/
+*.local.md
+.env
+.env.*
