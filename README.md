@@ -8,7 +8,7 @@
 
 1. 이 저장소를 내려받습니다.
 2. VS Code에서 저장소 루트를 엽니다.
-3. [[VS Code Markdown 위키와 Foam 그래프 구성]]을 참고해 권장 확장을 설치합니다.
+3. [VS Code Markdown 위키와 Foam 그래프 구성](<./30_지식/VS Code Markdown 위키와 Foam 그래프 구성.md>)을 참고해 권장 확장을 설치합니다.
 4. `00_인덱스/HOME.md`에서 시작합니다.
 
 ## 기본 원칙
@@ -28,7 +28,7 @@
 - Markdown Preview Mermaid Support
 - Foam
 
-설치와 설정 방법은 [[VS Code Markdown 위키와 Foam 그래프 구성]]에서 확인합니다.
+설치와 설정 방법은 [VS Code Markdown 위키와 Foam 그래프 구성](<./30_지식/VS Code Markdown 위키와 Foam 그래프 구성.md>)에서 확인합니다.
 
 ## 디렉터리
 
