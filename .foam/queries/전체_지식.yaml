@@ -1,0 +1,11 @@
+name: 전체 지식
+description: 지식 문서를 최근 수정일 순으로 표시합니다.
+filter:
+  type: "지식"
+select:
+  - title
+  - tags
+  - field: properties.updated
+    label: 수정일
+sort: properties.updated DESC
+limit: 200

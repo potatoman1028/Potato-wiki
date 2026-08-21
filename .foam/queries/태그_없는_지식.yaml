@@ -1,0 +1,13 @@
+name: 태그 없는 지식
+description: 태그 정리가 필요한 지식 문서를 표시합니다.
+filter:
+  and:
+    - type: "지식"
+    - jexl: "resource.tags|length == 0"
+select:
+  - title
+  - path
+  - field: properties.updated
+    label: 수정일
+sort: title ASC
+limit: 200

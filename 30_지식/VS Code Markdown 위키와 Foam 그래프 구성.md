@@ -2,7 +2,7 @@
 type: 지식
 created: 2026-08-20
 updated: 2026-08-21
-tags: [VSCode, Markdown, Foam, Git, GitHub, GitLens, Fork, 문서화, 지식그래프]
+tags: [VSCode, Markdown, Foam, FoamQuery, Git, GitHub, GitLens, Fork, 문서화, 지식그래프]
 aliases: [VS Code Markdown 설정, Foam 사용법, Markdown 위키 구성, VS Code Git 설정]
 source: ChatGPT 대화 정리
 ---
@@ -16,6 +16,7 @@ source: ChatGPT 대화 정리
 - 문서 관계 그래프와 백링크는 `Foam`으로 표현한다.
 - 현재 위키에서 사용하는 `[[위키링크]]`는 Foam과 호환되므로 기존 문서를 크게 변경할 필요가 없다.
 - 파일은 일반 `.md`이므로 Foam을 제거해도 문서 자체는 그대로 남는다.
+- Foam Queries와 `.foam/queries/` 저장 쿼리를 사용하면 문서를 추가할 때 인덱스와 점검 목록이 자동으로 갱신된다.
 - 일반적인 Git 작업은 VS Code 내장 Git 기능으로 충분하며, 변경 확인 → Stage → Commit → Pull/Push까지 VS Code 안에서 처리할 수 있다.
 - Git 이력 추적은 `GitLens`, 복잡한 rebase/reset/cherry-pick이나 복구 작업은 `Fork`를 보조 도구로 사용하는 구성을 권장한다.
 
@@ -149,7 +150,86 @@ flowchart LR
 
 그래프는 문서가 같은 폴더에 있다는 이유만으로 연결하지 않는다. 실제 링크가 있어야 관계선이 만들어진다.
 
-## 4. 위키링크와 일반 Markdown 링크
+## 4. Foam Queries로 문서 자동 집계
+
+Foam Queries는 Markdown 문서의 YAML 속성, 태그, 경로와 링크 정보를 조회해 목록·표·개수를 자동으로 만든다. Obsidian Dataview와 비슷한 역할을 하며 Foam에 포함되어 있으므로 별도의 Dataview 확장이 필요하지 않다.
+
+쿼리는 한 번 정의해야 하지만, 저장한 뒤에는 문서를 추가하거나 메타데이터를 수정할 때 결과가 자동으로 갱신된다.
+
+### 이 위키에 적용한 저장 쿼리
+
+저장 쿼리는 `.foam/queries/`에 있으며 VS Code의 Foam 사이드바에서 스마트 폴더로 재사용할 수 있다.
+
+| 파일 | 표시 이름 | 용도 |
+| --- | --- | --- |
+| `.foam/queries/전체_지식.yaml` | 전체 지식 | `type: 지식` 문서를 최근 수정일 순으로 확인 |
+| `.foam/queries/최근_수정.yaml` | 최근 수정 | 수정일이 기록된 최근 문서 20개 확인 |
+| `.foam/queries/태그_없는_지식.yaml` | 태그 없는 지식 | 태그 정리가 필요한 지식 문서 확인 |
+| `.foam/queries/연결_점검.yaml` | 연결 점검 | 백링크가 적은 지식 문서부터 확인 |
+
+사용 순서는 다음과 같다.
+
+1. 저장소 루트를 VS Code에서 연다.
+2. Foam 확장이 쿼리를 인식하지 못하면 `Developer: Reload Window`를 실행한다.
+3. Foam 사이드바의 Smart Folders에서 저장 쿼리를 선택한다.
+4. 결과의 문서 제목을 선택해 해당 문서로 이동한다.
+
+### 문서 안에 자동 표 표시
+
+`30_지식/지식_인덱스.md`에는 다음 쿼리가 적용되어 있다.
+
+```foam-query
+filter:
+  type: "지식"
+select:
+  - title
+  - tags
+  - field: properties.updated
+    label: 수정일
+sort: properties.updated DESC
+format: table
+limit: 200
+```
+
+문서에 다음 메타데이터가 있으면 자동 목록에 포함된다.
+
+```yaml
+---
+type: 지식
+created: 2026-08-21
+updated: 2026-08-21
+tags: [VSCode, Markdown, Foam]
+---
+```
+
+새 지식 문서를 만들 때 `type: 지식`을 지정하고 `updated`, `tags`를 관리하면 자동 표를 직접 수정할 필요가 없다.
+
+### 저장 쿼리 예제
+
+`.foam/queries/전체_지식.yaml`은 다음과 같이 구성되어 있다.
+
+```yaml
+name: 전체 지식
+description: 지식 문서를 최근 수정일 순으로 표시합니다.
+filter:
+  type: "지식"
+select:
+  - title
+  - tags
+  - field: properties.updated
+    label: 수정일
+sort: properties.updated DESC
+limit: 200
+```
+
+### 표시 위치와 주의사항
+
+- `foam-query` 결과는 VS Code의 Markdown 미리보기에서 표시된다.
+- GitHub에서는 쿼리가 실행되지 않고 코드 블록으로 보이므로 주요 링크는 수동 목록으로도 유지한다.
+- 일반적인 조회에는 YAML 기반 `foam-query`를 사용한다.
+- `foam-query-js`는 신뢰된 워크스페이스에서 VS Code와 같은 권한으로 실행되므로, 직접 작성했거나 신뢰하는 코드만 사용한다.
+
+## 5. 위키링크와 일반 Markdown 링크
 
 ### 위키링크
 
@@ -191,7 +271,7 @@ flowchart LR
 - 외부 웹페이지에는 `[표시 이름](URL)` 형식을 사용한다.
 - 파일명은 중복되지 않게 작성해 `[[문서 이름]]`이 모호해지지 않도록 한다.
 
-## 5. Mermaid 다이어그램
+## 6. Mermaid 다이어그램
 
 문서 간의 실제 연결 관계는 Foam 그래프로 확인하고, 특정 시스템 구조를 설명할 때는 Mermaid를 사용한다.
 
@@ -209,7 +289,7 @@ flowchart TD
 
 두 그래프는 목적이 다르므로 함께 사용할 수 있다.
 
-## 6. VS Code를 Git 클라이언트로 사용하기
+## 7. VS Code를 Git 클라이언트로 사용하기
 
 VS Code에는 Git 기능이 기본 내장되어 있어 일상적인 Git 작업은 별도의 GUI 클라이언트 없이 처리할 수 있다.
 
@@ -247,7 +327,7 @@ git push
 
 전체 변경을 무조건 한 번에 Stage하기보다 Commit 목적에 맞는 파일만 선택해서 Stage하는 습관을 권장한다.
 
-## 7. VS Code에서 Push하기
+## 8. VS Code에서 Push하기
 
 Fork를 열지 않아도 VS Code에서 바로 Push할 수 있다.
 
@@ -293,7 +373,7 @@ main  ↓1 ↑2
 
 이를 확인하면 Pull이 필요한지, Push가 필요한지 빠르게 판단할 수 있다.
 
-## 8. Push와 Sync Changes 차이
+## 9. Push와 Sync Changes 차이
 
 `Push`는 현재 로컬 Commit을 원격으로 보내는 작업이다.
 
@@ -317,7 +397,7 @@ Push
 
 Git을 처음 익힐 때는 `Sync Changes`만 사용하는 것보다 `Pull`과 `Push`를 직접 구분해서 실행하는 것을 권장한다. 어떤 방향으로 데이터가 이동하는지 이해하기 쉽고, 의도하지 않은 동기화를 줄일 수 있다.
 
-## 9. GitLens의 역할
+## 10. GitLens의 역할
 
 VS Code 내장 Git은 현재 변경 내용을 다루는 데 강하고, GitLens는 **과거 변경 이력을 추적하는 용도**로 사용하면 좋다.
 
@@ -339,7 +419,7 @@ GitLens
 └─ 과거에 왜 이렇게 변경되었는지 추적
 ```
 
-## 10. Fork와 VS Code 역할 분리
+## 11. Fork와 VS Code 역할 분리
 
 일반적인 작업은 VS Code만으로 처리하고, Git 그래프를 보면서 복잡한 이력 작업을 해야 할 때 Fork를 사용하는 방식을 권장한다.
 
@@ -373,7 +453,7 @@ Fork가 있어야 Push할 수 있는 것은 아니다. **일상 작업은 VS Cod
 
 관련 Git/Fork 기본 개념과 명령은 [[Git과 Fork 클라이언트 기본 사용법]]도 참고한다.
 
-## 11. Git 전역 설정 권장값
+## 12. Git 전역 설정 권장값
 
 개발 PC에서 한 번 설정해두면 여러 저장소에서 공통으로 적용할 수 있다.
 
@@ -399,7 +479,7 @@ Pull 과정에서 자동으로 Merge Commit이 만들어지는 것을 막고, fa
 
 Git 동작을 익히는 단계에서는 의도하지 않은 Merge Commit을 줄이는 데 도움이 된다.
 
-## 12. 추천 Git 운영 방식
+## 13. 추천 Git 운영 방식
 
 개인 위키나 일반 개발 작업에서는 다음 흐름을 기본으로 사용한다.
 
@@ -424,15 +504,16 @@ GitHub / GitLab
 
 기본 작업에서 Fork를 항상 실행할 필요는 없다. VS Code에서 작업하다가 Commit Graph를 자세히 확인하거나 복잡한 이력 수정이 필요할 때 Fork를 열면 된다.
 
-## 13. 위키 추천 운영 방식
+## 14. 위키 추천 운영 방식
 
 1. `00_인덱스/INBOX.md`에 먼저 기록한다.
 2. 오래 유지할 내용은 `30_지식/`에 주제별 문서로 정리한다.
 3. 관련 문서를 `[[위키링크]]`로 연결한다.
-4. `Foam: Show Graph`에서 고립된 문서와 연결 관계를 확인한다.
-5. `Ctrl + Shift + G`에서 변경 내용을 확인한다.
-6. 필요한 파일만 Stage하고 Commit한다.
-7. 원격 변경이 있는지 확인한 뒤 Pull 또는 Push한다.
+4. Foam 저장 쿼리와 `지식_인덱스`의 자동 표에서 누락된 태그와 최근 변경을 확인한다.
+5. `Foam: Show Graph`와 `연결 점검` 쿼리에서 문서 연결 관계를 확인한다.
+6. `Ctrl + Shift + G`에서 변경 내용을 확인한다.
+7. 필요한 파일만 Stage하고 Commit한다.
+8. 원격 변경이 있는지 확인한 뒤 Pull 또는 Push한다.
 
 ```text
 VS Code
@@ -445,7 +526,7 @@ GitHub
 └─ 문서 이력과 원격 보관
 ```
 
-## 14. 결론
+## 15. 결론
 
 이 위키에는 다음 구성이 적합하다.
 
@@ -473,6 +554,7 @@ Fork는 필수 Git 클라이언트라기보다 복잡한 Branch/Commit 이력 �
 - [VS Code Git 공식 문서](https://code.visualstudio.com/docs/sourcecontrol/intro-to-git)
 - [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
 - [Foam 공식 문서](https://foambubble.github.io/foam/)
+- [Foam Queries 공식 문서](https://github.com/foambubble/foam/blob/main/docs/user/features/foam-queries.md)
 - [Foam - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=foam.foam-vscode)
 - [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
 - [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
