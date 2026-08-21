@@ -23,8 +23,10 @@ updated: 2026-08-21
 
 ```foam-query
 filter:
-  not:
-    path: "^/90_보관/"
+  and:
+    - not:
+        path: "^/90_보관/"
+    - jexl: "resource.properties.updated"
 select:
   - title
   - type
