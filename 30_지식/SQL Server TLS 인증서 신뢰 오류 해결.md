@@ -1,7 +1,7 @@
 ---
 type: 지식
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-08-21
 tags: [MSSQL, SQLServer, TLS, SSL, 인증서, Windows]
 aliases: [SQL Server SSL 공급자 오류, 신뢰되지 않은 인증서 체인 해결]
 source: ChatGPT 대화 정리
@@ -343,7 +343,7 @@ connectionString:Data Source=...;User ID=...;Password=...;
 
 ```text
 server=localhost
-database=CSI_DEV_AUTH
+database=EXAMPLE_DEV_AUTH
 user=sa
 password=***
 ```

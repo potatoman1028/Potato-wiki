@@ -1,7 +1,7 @@
 ---
 type: 지식
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-08-21
 tags: [MSSQL, SQLServer, InMemoryOLTP, Windows, 개발환경]
 aliases: [SQL Server 로컬 DB 구성, MEMORY_OPTIMIZED_FILEGROUP 설정]
 source: ChatGPT 대화 정리
@@ -63,7 +63,7 @@ C:\MSSQL\MEMORY
 주의할 점은 다음과 같다.
 
 - `DATA`, `LOG`, `MEMORY` 부모 폴더는 미리 만든다.
-- `CSI_DEV_AUTH_mod` 같은 마지막 컨테이너 폴더는 미리 만들지 않고 SQL Server가 생성하게 둔다.
+- `EXAMPLE_DEV_AUTH_mod` 같은 마지막 컨테이너 폴더는 미리 만들지 않고 SQL Server가 생성하게 둔다.
 - SQL Server 서비스 계정에 해당 부모 폴더의 쓰기 권한이 있어야 한다.
 
 ## 3. 대상 DB
@@ -71,10 +71,10 @@ C:\MSSQL\MEMORY
 로컬 개발 환경에 다음 DB를 구성한다.
 
 ```text
-CSI_DEV_AUTH
-CSI_DEV_CONTENTS
-CSI_DEV_GAME
-CSI_DEV_LOG
+EXAMPLE_DEV_AUTH
+EXAMPLE_DEV_CONTENTS
+EXAMPLE_DEV_GAME
+EXAMPLE_DEV_LOG
 ```
 
 공통 설정은 다음과 같다.
@@ -118,10 +118,10 @@ DECLARE @Databases table
 
 INSERT INTO @Databases (DbName)
 VALUES
-    (N'CSI_DEV_AUTH'),
-    (N'CSI_DEV_CONTENTS'),
-    (N'CSI_DEV_GAME'),
-    (N'CSI_DEV_LOG');
+    (N'EXAMPLE_DEV_AUTH'),
+    (N'EXAMPLE_DEV_CONTENTS'),
+    (N'EXAMPLE_DEV_GAME'),
+    (N'EXAMPLE_DEV_LOG');
 
 DECLARE @DbName sysname;
 DECLARE @Sql nvarchar(max);
@@ -253,7 +253,7 @@ GO
 다음 구문에서 실패했더라도 `CREATE DATABASE`가 먼저 성공했다면 DB는 이미 존재한다.
 
 ```sql
-ALTER DATABASE [CSI_DEV_AUTH] SET COMPATIBILITY_LEVEL = 160;
+ALTER DATABASE [EXAMPLE_DEV_AUTH] SET COMPATIBILITY_LEVEL = 160;
 ```
 
 현재 SQL Server 버전을 확인한다.
@@ -276,7 +276,7 @@ SELECT
 SQL Server 2019라면 삭제하지 않고 다음처럼 보정한다.
 
 ```sql
-ALTER DATABASE [CSI_DEV_AUTH] SET COMPATIBILITY_LEVEL = 150;
+ALTER DATABASE [EXAMPLE_DEV_AUTH] SET COMPATIBILITY_LEVEL = 150;
 ```
 
 ## 6. 생성 결과 확인
@@ -293,10 +293,10 @@ SELECT
 FROM sys.databases
 WHERE name IN
 (
-    N'CSI_DEV_AUTH',
-    N'CSI_DEV_CONTENTS',
-    N'CSI_DEV_GAME',
-    N'CSI_DEV_LOG'
+    N'EXAMPLE_DEV_AUTH',
+    N'EXAMPLE_DEV_CONTENTS',
+    N'EXAMPLE_DEV_GAME',
+    N'EXAMPLE_DEV_LOG'
 )
 ORDER BY name;
 ```
@@ -304,7 +304,7 @@ ORDER BY name;
 특정 DB의 파일 그룹과 실제 경로를 확인한다.
 
 ```sql
-USE [CSI_DEV_AUTH];
+USE [EXAMPLE_DEV_AUTH];
 GO
 
 SELECT

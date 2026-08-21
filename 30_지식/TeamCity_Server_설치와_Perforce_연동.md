@@ -1,7 +1,7 @@
 ---
 type: 지식
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-08-21
 tags: [TeamCity, CI_CD, Perforce, MSSQL, WindowsServer]
 aliases: [TeamCity 설치, 팀시티 설치, TeamCity P4 연동]
 source: 대화 기록, TeamCity 설치 PDF 메모
@@ -271,7 +271,7 @@ C:\TeamCity\buildAgent\conf\buildAgent.properties
 ```
 
 ```properties
-name=CSI-BUILD-A1
+name=BUILD-AGENT-A1
 ```
 
 수정 후 Agent 서비스를 재시작한다.
