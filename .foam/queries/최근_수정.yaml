@@ -1,8 +1,10 @@
 name: 최근 수정
-description: 최근 수정한 문서 20개를 표시합니다.
+description: 수정일이 기록된 최근 문서 20개를 표시합니다.
 filter:
-  not:
-    path: "^/90_보관/"
+  and:
+    - not:
+        path: "^/90_보관/"
+    - jexl: "resource.properties.updated"
 select:
   - title
   - type
