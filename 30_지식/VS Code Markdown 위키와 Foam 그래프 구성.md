@@ -1,7 +1,7 @@
 ---
 type: 지식
 created: 2026-08-20
-updated: 2026-08-20
+updated: 2026-08-21
 tags: [VSCode, Markdown, Foam, GitHub, 문서화, 지식그래프]
 aliases: [VS Code Markdown 설정, Foam 사용법, Markdown 위키 구성]
 source: ChatGPT 대화 정리
@@ -16,6 +16,7 @@ source: ChatGPT 대화 정리
 - 문서 관계 그래프와 백링크는 `Foam`으로 표현한다.
 - 현재 위키에서 사용하는 `[[위키링크]]`는 Foam과 호환되므로 기존 문서를 크게 변경할 필요가 없다.
 - 파일은 일반 `.md`이므로 Foam을 제거해도 문서 자체는 그대로 남는다.
+- Foam Queries와 `.foam/queries/` 저장 쿼리를 사용하면 문서를 추가할 때 인덱스와 점검 목록이 자동으로 갱신된다.
 
 ## 1. 권장 확장 구성
 
@@ -114,7 +115,86 @@ flowchart LR
 
 그래프는 문서가 같은 폴더에 있다는 이유만으로 연결하지 않는다. 실제 링크가 있어야 관계선이 만들어진다.
 
-## 4. 위키링크와 일반 Markdown 링크
+## 4. Foam Queries로 문서 자동 집계
+
+Foam Queries는 Markdown 문서의 YAML 속성, 태그, 경로와 링크 정보를 조회해 목록·표·개수를 자동으로 만든다. Obsidian Dataview와 비슷한 역할을 하며 Foam에 포함되어 있으므로 별도의 Dataview 확장이 필요하지 않다.
+
+쿼리는 한 번 정의해야 하지만, 저장한 뒤에는 문서를 추가하거나 메타데이터를 수정할 때 결과가 자동으로 갱신된다.
+
+### 이 위키에 적용한 저장 쿼리
+
+저장 쿼리는 `.foam/queries/`에 있으며 VS Code의 Foam 사이드바에서 스마트 폴더로 재사용할 수 있다.
+
+| 파일 | 표시 이름 | 용도 |
+| --- | --- | --- |
+| `.foam/queries/전체_지식.yaml` | 전체 지식 | `type: 지식` 문서를 최근 수정일 순으로 확인 |
+| `.foam/queries/최근_수정.yaml` | 최근 수정 | 보관 문서를 제외한 최근 수정 문서 20개 확인 |
+| `.foam/queries/태그_없는_지식.yaml` | 태그 없는 지식 | 태그 정리가 필요한 지식 문서 확인 |
+| `.foam/queries/연결_점검.yaml` | 연결 점검 | 백링크가 적은 지식 문서부터 확인 |
+
+사용 순서는 다음과 같다.
+
+1. 저장소 루트를 VS Code에서 연다.
+2. Foam 확장이 쿼리를 인식하지 못하면 `Developer: Reload Window`를 실행한다.
+3. Foam 사이드바의 Smart Folders에서 저장 쿼리를 선택한다.
+4. 결과의 문서 제목을 선택해 해당 문서로 이동한다.
+
+### 문서 안에 자동 표 표시
+
+`30_지식/지식_인덱스.md`에는 다음 쿼리가 적용되어 있다.
+
+```foam-query
+filter:
+  type: "지식"
+select:
+  - title
+  - tags
+  - field: properties.updated
+    label: 수정일
+sort: properties.updated DESC
+format: table
+limit: 200
+```
+
+문서에 다음 메타데이터가 있으면 자동 목록에 포함된다.
+
+```yaml
+---
+type: 지식
+created: 2026-08-21
+updated: 2026-08-21
+tags: [VSCode, Markdown, Foam]
+---
+```
+
+따라서 새로운 지식 문서를 만들 때 `type: 지식`을 지정하고 `updated`, `tags`를 관리하면 자동 표를 직접 수정할 필요가 없다.
+
+### 저장 쿼리 예제
+
+`.foam/queries/전체_지식.yaml`은 다음과 같이 구성되어 있다.
+
+```yaml
+name: 전체 지식
+description: 지식 문서를 최근 수정일 순으로 표시합니다.
+filter:
+  type: "지식"
+select:
+  - title
+  - tags
+  - field: properties.updated
+    label: 수정일
+sort: properties.updated DESC
+limit: 200
+```
+
+### 표시 위치와 주의사항
+
+- `foam-query` 결과는 VS Code의 Markdown 미리보기에서 표시된다.
+- GitHub에서는 쿼리가 실행되지 않고 코드 블록으로 보이므로 주요 링크는 수동 목록으로도 유지한다.
+- 일반적인 조회에는 YAML 기반 `foam-query`를 사용한다.
+- `foam-query-js`는 신뢰된 워크스페이스에서 VS Code와 같은 권한으로 실행되므로, 직접 작성했거나 신뢰하는 코드만 사용한다.
+
+## 5. 위키링크와 일반 Markdown 링크
 
 ### 위키링크
 
@@ -156,7 +236,7 @@ flowchart LR
 - 외부 웹페이지에는 `[표시 이름](URL)` 형식을 사용한다.
 - 파일명은 중복되지 않게 작성해 `[[문서 이름]]`이 모호해지지 않도록 한다.
 
-## 5. Mermaid 다이어그램
+## 6. Mermaid 다이어그램
 
 문서 간의 실제 연결 관계는 Foam 그래프로 확인하고, 특정 시스템 구조를 설명할 때는 Mermaid를 사용한다.
 
@@ -174,13 +254,14 @@ flowchart TD
 
 두 그래프는 목적이 다르므로 함께 사용할 수 있다.
 
-## 6. 추천 운영 방식
+## 7. 추천 운영 방식
 
 1. `00_인덱스/INBOX.md`에 먼저 기록한다.
 2. 오래 유지할 내용은 `30_지식/`에 주제별 문서로 정리한다.
 3. 관련 문서를 `[[위키링크]]`로 연결한다.
-4. `Foam: Show Graph`에서 고립된 문서와 연결 관계를 확인한다.
-5. Git 변경 내용을 확인하고 Commit 및 Push한다.
+4. Foam 저장 쿼리와 `지식_인덱스`의 자동 표에서 누락된 태그와 최근 변경을 확인한다.
+5. `Foam: Show Graph`와 `연결 점검` 쿼리에서 문서 연결 관계를 확인한다.
+6. Git 변경 내용을 확인하고 Commit 및 Push한다.
 
 ```text
 VS Code
@@ -193,7 +274,7 @@ GitHub
 └─ 문서 이력과 원격 보관
 ```
 
-## 7. 결론
+## 8. 결론
 
 이 위키에는 다음 구성이 적합하다.
 
@@ -213,6 +294,7 @@ Obsidian을 실행하거나 연동하지 않아도 Markdown 작성, 미리보기
 
 - [VS Code Markdown 공식 문서](https://code.visualstudio.com/docs/languages/markdown)
 - [Foam 공식 문서](https://foambubble.github.io/foam/)
+- [Foam Queries 공식 문서](https://github.com/foambubble/foam/blob/main/docs/user/features/foam-queries.md)
 - [Foam - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=foam.foam-vscode)
 - [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
 - [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
