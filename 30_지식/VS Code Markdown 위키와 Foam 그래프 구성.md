@@ -11,7 +11,7 @@ source: ChatGPT 대화 정리
 
 ## 요약
 
-- Obsidian 없이도 **VS Code + Markdown + Git**으로 개인 위키를 관리할 수 있다.
+- **VS Code + Markdown + Git**으로 개인 위키를 관리할 수 있다.
 - 문서 작성은 `Markdown All in One`, 형식 검사는 `markdownlint`, GitHub 결과 확인은 `Markdown Preview GitHub Styling`을 사용한다.
 - 문서 관계 그래프와 백링크는 `Foam`으로 표현한다.
 - 현재 위키에서 사용하는 `[[위키링크]]`는 Foam과 호환되므로 기존 문서를 크게 변경할 필요가 없다.
@@ -152,7 +152,7 @@ flowchart LR
 
 ## 4. Foam Queries로 문서 자동 집계
 
-Foam Queries는 Markdown 문서의 YAML 속성, 태그, 경로와 링크 정보를 조회해 목록·표·개수를 자동으로 만든다. Obsidian Dataview와 비슷한 역할을 하며 Foam에 포함되어 있으므로 별도의 Dataview 확장이 필요하지 않다.
+Foam Queries는 Markdown 문서의 YAML 속성, 태그, 경로와 링크 정보를 조회해 목록·표·개수를 자동으로 만든다. Foam에 포함된 기능이므로 별도의 쿼리 확장 없이 사용할 수 있다.
 
 쿼리는 한 번 정의해야 하지만, 저장한 뒤에는 문서를 추가하거나 메타데이터를 수정할 때 결과가 자동으로 갱신된다.
 
@@ -543,7 +543,7 @@ VS Code
 필요할 때만 Fork
 ```
 
-Obsidian을 실행하거나 연동하지 않아도 Markdown 작성, 미리보기, 문서 관계 그래프, 백링크, 변경 이력 확인, Commit과 Push까지 대부분의 작업을 VS Code 안에서 처리할 수 있다.
+Markdown 작성, 미리보기, 문서 관계 그래프, 백링크, 변경 이력 확인, Commit과 Push까지 대부분의 작업을 VS Code 안에서 처리할 수 있다.
 
 Fork는 필수 Git 클라이언트라기보다 복잡한 Branch/Commit 이력 작업을 시각적으로 처리하기 위한 보조 도구로 사용한다.
 
