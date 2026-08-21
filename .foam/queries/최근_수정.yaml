@@ -1,0 +1,13 @@
+name: 최근 수정
+description: 최근 수정한 문서 20개를 표시합니다.
+filter:
+  not:
+    path: "^/90_보관/"
+select:
+  - title
+  - type
+  - field: properties.updated
+    label: 수정일
+  - tags
+sort: properties.updated DESC
+limit: 20
