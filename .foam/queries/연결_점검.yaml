@@ -7,7 +7,7 @@ select:
   - field: backlink-count
     label: 백링크
   - field: outlink-count
-    label: 외부 링크
+    label: 나가는 링크
   - tags
 sort: backlink-count ASC
 limit: 200
