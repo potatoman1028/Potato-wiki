@@ -1,6 +1,6 @@
 # AGENTS.md
 
-이 저장소는 Markdown과 Obsidian으로 관리하는 개인 위키다.
+이 저장소는 Markdown과 Foam으로 관리하는 개인 위키다.
 
 Codex는 작업을 시작하기 전에 다음 문서를 순서대로 읽는다.
 
