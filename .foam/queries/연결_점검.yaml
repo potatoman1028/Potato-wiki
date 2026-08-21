@@ -1,0 +1,13 @@
+name: 연결 점검
+description: 지식 문서를 백링크가 적은 순서로 표시합니다.
+filter:
+  type: "지식"
+select:
+  - title
+  - field: backlink-count
+    label: 백링크
+  - field: outlink-count
+    label: 외부 링크
+  - tags
+sort: backlink-count ASC
+limit: 200
